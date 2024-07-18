@@ -10,7 +10,7 @@ rpcClient: RPCClient = RPCClient()
 
 images_status: dict[str, int] = {}
 images_count = 0
-images_limit = 100000
+images_limit = 5
 
 
 @router.post("/upload")

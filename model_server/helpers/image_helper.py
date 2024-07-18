@@ -29,15 +29,15 @@ class ImageHelper:
 
     @staticmethod
     def add_watermark(image: Image.Image, watermark_text: str = "ВСЕГЕИ") -> Image.Image:
-        # width, height = image.size
-        # draw = ImageDraw.Draw(image)
-        # font_size = int(height / 20)
-        # font = ImageFont.truetype("DejaVuSans.ttf", font_size)
-        # text_bbox = draw.textbbox((0, 0), watermark_text, font=font)
-        # text_width = text_bbox[2] - text_bbox[0]
-        # text_height = text_bbox[3] - text_bbox[1]
-        # x, y = width - text_width - 100, height - text_height - 100
-        # draw.text((x, y), watermark_text, font=font, fill=(255, 255, 255, 128))
+        width, height = image.size
+        draw = ImageDraw.Draw(image)
+        font_size = int(height / 20)
+        font = ImageFont.truetype("DejaVuSans.ttf", font_size)
+        text_bbox = draw.textbbox((0, 0), watermark_text, font=font)
+        text_width = text_bbox[2] - text_bbox[0]
+        text_height = text_bbox[3] - text_bbox[1]
+        x, y = width - text_width - 100, height - text_height - 100
+        draw.text((x, y), watermark_text, font=font, fill=(255, 255, 255, 128))
         return image
 
     @staticmethod

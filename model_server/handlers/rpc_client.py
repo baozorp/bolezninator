@@ -15,7 +15,7 @@ class RPCClient:
         while True:
             try:
                 self.connection = pika.BlockingConnection(
-                    pika.ConnectionParameters(host='localhost', port="5672"))
+                    pika.ConnectionParameters(host='rabbitmq', port="5672"))
 
                 self.channel = self.connection.channel()
                 self.channel.basic_consume(queue=self.queue_name,
@@ -28,7 +28,7 @@ class RPCClient:
     def _on_message(self, ch, method, props, body):
         ch.basic_ack(delivery_tag=method.delivery_tag)
         image_name = str(body)[2:-1]
-        url = f"http://localhost:8080/images/download_for_ML?image_name={
+        url = f"http://rest_api:8080/images/download_for_ML?image_name={
             image_name}"
         response = requests.get(url)
         time.sleep(1)
@@ -38,7 +38,7 @@ class RPCClient:
                 response.content)
             image_jpeg = ImageHelper.add_watermark(image_jpeg)
             image_jpeg_to_responce = ImageHelper.image_to_bytes(image_jpeg)
-        url = f"http://localhost:8080/images/upload_from_ML?image_name={
+        url = f"http://rest_api:8080/images/upload_from_ML?image_name={
             image_name}"
         print(requests.post(url, files={
               "file": image_jpeg_to_responce}).status_code)
