@@ -1,4 +1,4 @@
-from rpc_client import RPCClient
+from handlers.rpc_client import RPCClient
 import os
 
 if __name__ == "__main__":

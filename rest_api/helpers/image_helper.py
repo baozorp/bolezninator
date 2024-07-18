@@ -10,8 +10,9 @@ class ImageHelper:
     os.makedirs(_upload_dir, exist_ok=True)
 
     @staticmethod
-    def save_image(image: Image.Image, image_path: str):
-        image.save(image_path, "JPEG")
+    def save_image_in_bytes(image: bytes, image_path: str):
+        with open(image_path, "wb") as image_file:
+            image_file.write(image)
 
     @staticmethod
     def get_image_name(image_path: str):
@@ -28,12 +29,6 @@ class ImageHelper:
     @staticmethod
     def is_image_exist(image_path: str):
         return os.path.exists(image_path)
-
-    @staticmethod
-    def convert_image(content: bytes) -> Image.Image:
-        with Image.open(io.BytesIO(content)) as img:
-            img = img.convert("RGB")
-            return img
 
     @staticmethod
     def add_watermark(image: Image.Image, watermark_text: str = "ВСЕГЕИ") -> Image.Image:

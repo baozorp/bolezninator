@@ -10,11 +10,11 @@ services:
     networks:
       - bolezninator
 
-  model_server:
-    build: model_server/.
-    container_name: model_server
-    networks:
-      - bolezninator
+  # model_server:
+  #   build: model_server/.
+  #   container_name: model_server
+  #   networks:
+  #     - bolezninator
 
   rabbitmq:
     image: "rabbitmq:3-management"
