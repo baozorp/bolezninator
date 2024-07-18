@@ -31,8 +31,7 @@ class RPCClient:
         response = requests.get(url)
 
         if response.status_code == 200:
-            with open(f"./uploads/{image_name}", "wb") as file:
-                print("Было")
+            print("Было")
         url = f"http://localhost:8080/images/upload_from_ML?image_name={
             image_name}"
         print(requests.post(url, files={"file": response.content}).status_code)

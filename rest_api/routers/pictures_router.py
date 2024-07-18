@@ -4,7 +4,6 @@ from fastapi.responses import FileResponse
 from helpers.image_helper import ImageHelper
 from helpers.rpc_client import RPCClient
 from models.response_models.upload_response_model import UploadResponseModel
-from models.request_models.upload_ML_request_model import UploadMLRequestModel
 
 router = APIRouter(prefix="/images")
 rpcClient: RPCClient = RPCClient()
@@ -42,7 +41,7 @@ async def upload_from_model(image_name: str, file=File(...)):
     image_path = ImageHelper.get_image_path(image_name="model"+image_name)
     content = await file.read()
     img = ImageHelper.convert_image(content=content)
-    ImageHelper.save_image(image=img, image_path="model"+image_path)
+    ImageHelper.save_image(image=img, image_path=image_path)
     images_status[image_name] = 3
     return
 
