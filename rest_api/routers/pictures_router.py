@@ -30,7 +30,7 @@ async def download_image(image_name: str, background_tasks: BackgroundTasks) -> 
     if ImageHelper.is_image_exist(image_path=image_path):
         background_tasks.add_task(ImageHelper.remove_image, image_path)
         return FileResponse(image_path, media_type='application/octet-stream', filename=image_name)
-    if image_name in images_status and images_status[image_name] != 3:
+    elif image_name in images_status and images_status[image_name] != 3:
         raise HTTPException(status_code=425, detail="Too early")
     else:
         raise HTTPException(status_code=404, detail="File not found")

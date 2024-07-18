@@ -11,7 +11,7 @@ class RPCClient:
         while True:
             try:
                 self.connection = pika.BlockingConnection(
-                    pika.ConnectionParameters(host='rabbitmq', port=5672, heartbeat=30, blocked_connection_timeout=300))
+                    pika.ConnectionParameters(host='rabbitmq', port=5672, heartbeat=3600, blocked_connection_timeout=300))
                 self.channel = self.connection.channel()
                 self.channel.queue_declare(queue=self.queue_name)
                 break

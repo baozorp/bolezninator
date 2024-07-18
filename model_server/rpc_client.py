@@ -29,7 +29,7 @@ class RPCClient:
         url = f"http://rest_api:8080/images/download_for_ML?image_name={
             image_name}"
         response = requests.get(url)
-
+        time.sleep(15)
         if response.status_code == 200:
             print("Было")
         url = f"http://rest_api:8080/images/upload_from_ML?image_name={
