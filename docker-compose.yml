@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+
+  rest_api:
+    build: rest_api/.
+    container_name: api
+    ports: 
+      - 8080:8080
+    networks:
+      - bolezninator
+
+  # model_server:
+  #   build: model_server/.
+  #   container_name: model_server
+  #   networks:
+  #     - bolezninator
+
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    container_name: "rabbitmq"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - bolezninator
+
+networks:
+  bolezninator:
