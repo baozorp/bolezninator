@@ -1,29 +1,32 @@
-version: '3'
-
+version: '3.10'
 services:
-
   rest_api:
     build: rest_api/.
     container_name: api
-    ports: 
+    ports:
       - 8080:8080
     networks:
       - bolezninator
 
   model_server:
-    build: model_server/.
+    build: ml_server/.
     container_name: model_server
     networks:
       - bolezninator
+    deploy:
+      resources:
+        limits:
+          memory: 5G
 
   rabbitmq:
     image: "rabbitmq:3-management"
     container_name: "rabbitmq"
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - 5672:5672
+      - 15672:15672
     networks:
       - bolezninator
 
 networks:
   bolezninator:
+    driver: bridge

@@ -1,7 +1,6 @@
 import os
-import io
 from PIL import Image, ImageDraw, ImageFont
-
+from datetime import datetime
 
 class ImageHelper:
 
@@ -44,7 +43,34 @@ class ImageHelper:
         return image
 
     @staticmethod
-    def remove_image(image_path: str) -> None:
+    def remove_image(
+            image_path: str,
+            image_name: str,
+            images_status: dict[str, int],
+            images_dates: dict[datetime, str],
+            images_count: dict[str, int]
+            ) -> None:
+        try:
+            os.remove(image_path)
+            del images_status[image_name]
+            print("deleted status")
+            key_to_remove = None
+            for key, value in images_dates.items():
+                if value == image_name:
+                    key_to_remove = key
+                    break
+            print("deleted date")
+            if key_to_remove:
+                del images_dates[key_to_remove]
+                print("finded date")
+            else:
+                raise Exception("Cant find date")
+            images_count["count"] -= 1
+        except Exception as e:
+            print(f"Can't remove image for reasons: {e}")
+
+    @staticmethod
+    def remove_image_for_ml(image_path: str) -> None:
         try:
             os.remove(image_path)
         except Exception as e:

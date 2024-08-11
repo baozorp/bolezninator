@@ -29,16 +29,18 @@ class ImageHelper:
 
     @staticmethod
     def add_watermark(image: Image.Image, watermark_text: str = "ВСЕГЕИ") -> Image.Image:
-        width, height = image.size
-        draw = ImageDraw.Draw(image)
-        font_size = int(height / 20)
-        font = ImageFont.truetype("DejaVuSans.ttf", font_size)
-        text_bbox = draw.textbbox((0, 0), watermark_text, font=font)
-        text_width = text_bbox[2] - text_bbox[0]
-        text_height = text_bbox[3] - text_bbox[1]
-        x, y = width - text_width - 100, height - text_height - 100
-        draw.text((x, y), watermark_text, font=font, fill=(255, 255, 255, 128))
-        return image
+        watermark = Image.open("/ml_server/helpers/images/watermark.png").convert("RGBA")
+        watermark = watermark.resize(image.size, resample=Image.Resampling.LANCZOS)
+
+        watermark = watermark.convert("RGBA")
+        alpha = watermark.split()[3]
+        alpha = alpha.point(lambda p: p * 100 / 100)  # Устанавливаем уровень прозрачности
+        watermark.putalpha(alpha)
+        combined = Image.new('RGBA', image.size)
+        combined.paste(image.convert("RGBA"), (0, 0))
+        combined.paste(watermark, (0, 0), mask=watermark)
+
+        return combined.convert("RGB")
 
     @staticmethod
     def image_to_bytes(image: Image.Image) -> bytes:
