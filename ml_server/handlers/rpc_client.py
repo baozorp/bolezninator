@@ -41,7 +41,7 @@ class RPCClient:
             image_bytes = response.content
 
             image_jpeg: Image.Image = ImageHelper.convert_image(image_bytes)
-            inference_result = self._inference_model.predict(image_jpeg, conf=0.01, save=False, imgsz=1024)
+            inference_result = self._inference_model.predict(image_jpeg, conf=0.01, save=False, imgsz=1024) # type: ignore
             image_in_memory = BytesIO()
             for result in inference_result:
                 # boxes = result.boxes
