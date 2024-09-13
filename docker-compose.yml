@@ -7,16 +7,21 @@ services:
       - 8080:8080
     networks:
       - bolezninator
+    volumes:
+      - /etc/nginx/ssl/certificate.crt:/app/certificate.crt
+      - /etc/nginx/ssl/certificate.key:/app/certificate.key
 
   model_server:
     build: ml_server/.
     container_name: model_server
     networks:
       - bolezninator
+    volumes:
+      - /etc/nginx/ssl/certificate_ssl.crt:/ml_server/certificate_ssl.crt
     deploy:
       resources:
         limits:
-          memory: 5G
+          memory: 2.6G
 
   rabbitmq:
     image: "rabbitmq:3-management"
@@ -30,3 +35,4 @@ services:
 networks:
   bolezninator:
     driver: bridge
+    external: true
