@@ -5,7 +5,8 @@ from helpers.image_helper import ImageHelper
 from PIL import Image
 from io import BytesIO
 from ultralytics import YOLO
-
+import logging
+import certifi
 
 class RPCClient:
     
@@ -26,17 +27,20 @@ class RPCClient:
                 self.channel = self.connection.channel()
                 self.channel.basic_consume(queue=self.queue_name,
                                            on_message_callback=self._on_message)
+                print("CONNECTED==================================================")
                 break
             except Exception as e:
                 print(f"Failed to connect to RabbitMQ: {e}")
                 time.sleep(3)
 
     def _on_message(self, ch, method, props, body):
+        logging.info("NEW MESSAGE ==================================================")
         try:
+            print("TRY========================================================================", flush=True)
             ch.basic_ack(delivery_tag=method.delivery_tag)
             image_name = str(body)[2:-1]
-            url = f"http://api:8080/images/download_for_ML?image_name={image_name}"
-            response = requests.get(url)
+            url = f"https://api:8080/images/download_for_ML?image_name={image_name}"
+            response = requests.get(url, verify=False)
             response.raise_for_status()
             image_bytes = response.content
 
@@ -52,8 +56,8 @@ class RPCClient:
             image_jpeg = Image.open(f"./uploads/{image_name}")
             image_jpeg = ImageHelper.add_watermark(image_jpeg)
             image_jpeg_to_responce = ImageHelper.image_to_bytes(image_jpeg)
-            url = f"http://api:8080/images/upload_from_ML?image_name={image_name}"
-            requests.post(url, files={
+            url = f"https://api:8080/images/upload_from_ML?image_name={image_name}"
+            requests.post(url, verify=False, files={
                 "file": image_jpeg_to_responce}).status_code
         except Exception as e:
             print(e)
