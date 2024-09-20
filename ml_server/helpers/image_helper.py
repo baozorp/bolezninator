@@ -34,7 +34,7 @@ class ImageHelper:
 
         watermark = watermark.convert("RGBA")
         alpha = watermark.split()[3]
-        alpha = alpha.point(lambda p: p * 100 / 100)  # Устанавливаем уровень прозрачности
+        alpha = alpha.point(lambda p: p * 100 / 100)
         watermark.putalpha(alpha)
         combined = Image.new('RGBA', image.size)
         combined.paste(image.convert("RGBA"), (0, 0))

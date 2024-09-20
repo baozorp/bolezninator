@@ -35,4 +35,3 @@ services:
 networks:
   bolezninator:
     driver: bridge
-    external: true

@@ -2,8 +2,10 @@ from handlers.rpc_client import RPCClient
 import os
 from pathlib import Path
 from ultralytics import YOLO
+from dotenv import load_dotenv
 
 if __name__ == "__main__":
+    load_dotenv()
     _upload_dir: str = "uploads"
     os.makedirs(_upload_dir, exist_ok=True)
     path = Path(r'/ml_server/helpers/weights/best.pt')
