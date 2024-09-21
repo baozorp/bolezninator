@@ -10,6 +10,7 @@ router = APIRouter(prefix="/images")
 rpcClient: RPCClient = RPCClient()
 
 images_status: dict[str, int] = {}
+images_description: dict[str, dict[str, str]] = {}
 images_dates: dict[datetime, str] = {}
 images_count: dict[str, int] = {"count": 0}
 images_limit = 150
@@ -61,7 +62,30 @@ async def download_image(image_name: str, background_tasks: BackgroundTasks) -> 
     else:
         raise HTTPException(status_code=404, detail="File not found")
 
+@router.post("/upload_description_ML")
+async def upload_description(data: dict):
+    global images_description
+    image_name = data["image_name"]
+    description = data["description"]
+    if images_status[image_name]:
+        images_description[image_name] = description
+    else:
+        raise HTTPException(status_code=404)
+    print(images_description)
+    return
 
+@router.get("/download_description")
+async def download_description(image_name: str):
+    global images_description, images_status
+    if image_name in images_description:
+        description = images_description[image_name]
+        del images_description[image_name]
+        return description
+    elif image_name in images_status and images_status[image_name] != 3:
+        raise HTTPException(status_code=425, detail="Too early")
+    else:
+        raise HTTPException(status_code=404, detail="Description not found")
+    
 @router.post("/upload_from_ML")
 async def upload_from_model(image_name: str, file=File(...)):
     global images_status

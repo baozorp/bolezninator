@@ -3,13 +3,14 @@ import os
 from pathlib import Path
 from ultralytics import YOLO
 from dotenv import load_dotenv
+import requests
 
 if __name__ == "__main__":
     load_dotenv()
     _upload_dir: str = "uploads"
     os.makedirs(_upload_dir, exist_ok=True)
-    path = Path(r'/ml_server/helpers/weights/best.pt')
-    inference_model = YOLO(path)
+    weights_path = "helpers/weights/best.pt"
+    inference_model = YOLO(weights_path)
     while True:
         try:
             print("start")
