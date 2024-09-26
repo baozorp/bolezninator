@@ -30,7 +30,7 @@ class ImageHelper:
         return os.path.exists(image_path)
 
     @staticmethod
-    def add_watermark(image: Image.Image, watermark_text: str = "ВСЕГЕИ") -> Image.Image:
+    def add_watermark(image: Image.Image, watermark_text: str = "Нейроскан") -> Image.Image:
         width, height = image.size
         draw = ImageDraw.Draw(image)
         font_size = int(height / 20)

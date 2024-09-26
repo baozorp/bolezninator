@@ -64,12 +64,19 @@ class RPCClient:
             image_bytes = response.content
             image_jpeg: Image.Image = ImageHelper.convert_image(image_bytes)
             inference_result = self._inference_model.predict(image_jpeg, conf=0.01, save=False, imgsz=1024)
-            if not inference_result[0].boxes:
-                raise ValueError
+            max_score_boxes: dict[str, float] = {}
+            max_score_boxes_final: dict[str, float]= {}
+            if not inference_result[0] or not inference_result[0].boxes:
+                data = {"image_name": image_name, "description": {"Найдено болезней": 0}}
+                description_response = requests.post(upload_description_url, verify=False, json=data)
+                requests.post(upload_url, verify=False, files={
+                    "file": image_bytes})
+                print("Говно")
+                return
             classes = inference_result[0].boxes.cls
             desired_classes = [3, 4, 5, 6, 7, 8, 9, 10]
             filtered_results = inference_result[0][[i for i, cls in enumerate(classes) if cls in desired_classes]]
-            max_score_boxes: dict[str, float] = {}
+            
             if not filtered_results.boxes:
                 raise ValueError
             for cls, score in zip(filtered_results.boxes.cls, filtered_results.boxes.conf):
@@ -79,9 +86,9 @@ class RPCClient:
                 else:
                     if max_score_boxes[cls_name] < float(score):
                         max_score_boxes[cls_name] = float(score)
-            max_score_boxes_final: dict[str, str]= {}
+            
             for key, value in max_score_boxes.items():
-                max_score_boxes_final[key] = f"{value * 100}%"
+                max_score_boxes_final[key] = value
             classes = filtered_results.boxes.cls
             scores = filtered_results.boxes.conf
             filtered_results = filtered_results[[i for i, score in enumerate(scores) if score in max_score_boxes.values()]]
@@ -94,7 +101,7 @@ class RPCClient:
             description_response = requests.post(upload_description_url, verify=False, json=data)
             description_response.raise_for_status()
             requests.post(upload_url, verify=False, files={
-                "file": image_jpeg_to_responce}).status_code
+                "file": image_jpeg_to_responce})
         except Exception as e:
             print(e)
 

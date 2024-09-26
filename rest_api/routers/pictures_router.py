@@ -10,14 +10,14 @@ router = APIRouter(prefix="/images")
 rpcClient: RPCClient = RPCClient()
 
 images_status: dict[str, int] = {}
-images_description: dict[str, dict[str, str]] = {}
+images_description: dict[str, dict[str, float]] = {}
 images_dates: dict[datetime, str] = {}
 images_count: dict[str, int] = {"count": 0}
 images_limit = 150
 
 
 @router.post("/upload")
-async def upload(background_tasks: BackgroundTasks, file: UploadFile = File(...)) -> UploadResponseModel:
+async def upload(file: UploadFile = File(...)) -> UploadResponseModel:
     global images_count, images_limit, images_dates
     if images_count["count"] > images_limit:
         min_date = min(images_dates.keys())
@@ -71,7 +71,6 @@ async def upload_description(data: dict):
         images_description[image_name] = description
     else:
         raise HTTPException(status_code=404)
-    print(images_description)
     return
 
 @router.get("/download_description")
@@ -79,8 +78,9 @@ async def download_description(image_name: str):
     global images_description, images_status
     if image_name in images_description:
         description = images_description[image_name]
+        description_final = {key: f"{(value * 100):.{2}f}%" if value > 0 else "0" for key, value in description.items()}
         del images_description[image_name]
-        return description
+        return description_final
     elif image_name in images_status and images_status[image_name] != 3:
         raise HTTPException(status_code=425, detail="Too early")
     else:
