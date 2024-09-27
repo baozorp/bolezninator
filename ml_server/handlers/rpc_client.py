@@ -28,7 +28,7 @@ class RPCClient:
             ('pneumothorax', 'пневмоторакс'),
             ('tracheal collapse', 'коллапс трахеи'),
             ('neoplasm', 'новобразования'),
-            ('atelectasis', 'спадение лёгкого')
+            ('atelectasis', 'ателектаз')
         ]
         self.connect()
 
